@@ -8,8 +8,12 @@ import android.text.TextUtils;
 
 public final class DbHelperFactory {
 
+    private static DbHelper dbHelper;
+
     public static DbHelper getDbHelper(Context context) {
-        return new DbHelper(context);
+        if(dbHelper != null)
+            return dbHelper;
+        return new DbHelper(context.getApplicationContext());
     }
 
     private DbHelperFactory() {
@@ -61,7 +65,7 @@ public final class DbHelperFactory {
 
         private String[] getDefaultData(){
 
-            String[] inserts = {
+            return new String[] {
                     String.format("INSERT INTO User(%s, %s) VALUES ('Johny', 'Cage');", UserContract.COLUMN_USERNAME, UserContract.COLUMN_PASSWORD),
                     String.format("INSERT INTO Product (%s, %s, %s) VALUES('AirPods', 74.4, 'https://cdn.shopify.com/s/files/1/0892/6470/products/airpodsfront1.png');",
                             ProductContract.COLUMN_NAME, ProductContract.COLUMN_PRICE, ProductContract.COLUMN_IMAGE_PATH),
@@ -79,9 +83,11 @@ public final class DbHelperFactory {
                             ProductContract.COLUMN_NAME, ProductContract.COLUMN_PRICE, ProductContract.COLUMN_IMAGE_PATH),
                     String.format("INSERT INTO Product (%s, %s, %s) VALUES('Pocket Watch', 90.3, 'https://cdn.shopify.com/s/files/1/1255/7129/products/avignon-black-front_1024x1024.png');",
                             ProductContract.COLUMN_NAME, ProductContract.COLUMN_PRICE, ProductContract.COLUMN_IMAGE_PATH),
+                    String.format("INSERT INTO Product (%s, %s, %s) VALUES('Cosmonaut Helmet', 777.33, 'https://i.pinimg.com/736x/6d/26/67/6d2667885e651a61ef5a6010e3ce7d07--astronaut-helmet-space-shuttles.jpg')",
+                            ProductContract.COLUMN_NAME, ProductContract.COLUMN_PRICE, ProductContract.COLUMN_IMAGE_PATH)
             };
 
-            return inserts;//TextUtils.join("", inserts);
+            //return inserts;//TextUtils.join("", inserts);
         }
 
         //WHEN onCreate IS CALLED A DB.JOURNAL FILE IS CREATED TOO, IT SEEMS THAT ERROR 14 WILL BE THROWN IF THIS FILE DOES NOT EXIST

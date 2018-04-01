@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.mmm.mmmtest.R;
 import com.mmm.mmmtest.ui.fragment.ListFragment;
 import com.mmm.mmmtest.ui.fragment.LocationFragment;
+import com.mmm.mmmtest.ui.fragment.NotificationFragment;
 import com.mmm.mmmtest.ui.fragment.TabsFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,13 +26,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_list:
-                    navigate(new TabsFragment());
+                    navigate(new TabsFragment(), getResources().getString(R.string.tabs_frag));
                     return true;
                 case R.id.navigation_notifications:
-                    navigate(new Fragment());
+                    navigate(new NotificationFragment(), getResources().getString(R.string.notifications_frag));
                     return true;
                 case R.id.navigation_location:
-                    navigate(new LocationFragment());
+                    navigate(new LocationFragment(), getResources().getString(R.string.location_frag));
                     return true;
             }
             return false;
@@ -48,11 +49,21 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigate(new TabsFragment());
+
+        if(getIntent().getBooleanExtra(NotificationFragment.NOTIFICATION_FRAGMENT_KEY, false)) {
+            //navigate(new NotificationFragment(), getString(R.string.notifications_frag));
+            navigation.setSelectedItemId(R.id.navigation_notifications);
+        } else navigate(new TabsFragment(), getResources().getString(R.string.tabs_frag));
+
+
     }
 
-    void navigate(Fragment fragment){
-        fm.beginTransaction().replace(R.id.content, fragment).commit();
+    void navigate(Fragment fragment, String tag){
+        Fragment requestedFragment = fm.findFragmentByTag(tag);
+        if(requestedFragment != null && requestedFragment.isVisible()) {
+            return;
+        }
+        fm.beginTransaction().replace(R.id.content, fragment, tag).commit();//.addToBackStack(null)
     }
 
 
